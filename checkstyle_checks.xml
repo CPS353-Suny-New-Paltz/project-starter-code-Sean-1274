@@ -186,10 +186,8 @@
       <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)" />
       <property name="checkFormat" value="$1" />
     </module>
-    <module name="JavadocMethod">
-    <property name="scope" value="public"/>
-    <property name="allowMissingParamTags" value="true"/>
-    <property name="allowMissingReturnTag" value="false"/>
+ <module name="JavadocMethod">
+  <property name="scope" value="public"/>
 </module>
     <module name="SuppressWithNearbyCommentFilter">
       <property name="commentFormat" value="CHECKSTYLE.SUPPRESS\: ([\w\|]+)"/>
