@@ -189,6 +189,7 @@
     <module name="JavadocMethod">
     <property name="scope" value="public"/>
     <property name="allowMissingParamTags" value="true"/>
+    <property name="allowMissingReturnTag" value="false"/>
 </module>
     <module name="SuppressWithNearbyCommentFilter">
       <property name="commentFormat" value="CHECKSTYLE.SUPPRESS\: ([\w\|]+)"/>
