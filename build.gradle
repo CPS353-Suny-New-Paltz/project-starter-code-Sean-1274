@@ -1,7 +1,12 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
+<<<<<<< Updated upstream
 eclipse.project.name = 'FillThisIn' 
+=======
+eclipse.project.name = 'FirstProject'
+
+>>>>>>> Stashed changes
 
 sourceSets {
 	main {
