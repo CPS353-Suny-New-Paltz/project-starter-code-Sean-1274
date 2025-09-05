@@ -6,6 +6,7 @@ public class Test {
 		int x = 10;
 		System.out.println("This will compile");
 
+
 	}
 
 }
