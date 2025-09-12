@@ -1,11 +1,11 @@
-package project.NetworkAPI;
+package project.networkapi;
 
 /**
  * Defines delimiters for formatting results.
  * 
  * Example:
- * Input/Output Pair → separated by ";"
- * Input/Result      → separated by ":"
+ * Input/Output Pair separated by ";"
+ * Input/Result separated by ":"
  * 
  * So a formatted string might look like:
  *   "input1:result1;input2:result2;..."
@@ -24,7 +24,11 @@ public class DelimiterPair {
 		return new DelimiterPair(";", ":");
 	}
 
-	public String getPairDelimiter() { return pairDelimiter; }
-	public String getResultDelimiter() { return resultDelimiter; }
+	public String getPairDelimiter() { 
+		return pairDelimiter; 
+	}
+	public String getResultDelimiter() { 
+		return resultDelimiter; 
+	}
 }
 

@@ -1,4 +1,4 @@
-package project.NetworkAPI;
+package project.networkapi;
 
 /**
  * Response object for a submitted job.

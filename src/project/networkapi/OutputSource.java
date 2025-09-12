@@ -1,4 +1,4 @@
-package project.NetworkAPI;
+package project.networkapi;
 
 /**
  * Represents a generalized destination for output data.
