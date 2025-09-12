@@ -22,9 +22,20 @@ public class JobResponse {
 		this.delimiters = delimiters;
 	}
 
-	public String getMessage() { return message; }
-	public String getInputSource() { return inputSource; }
-	public String getOutputSource() { return outputSource; }
-	public DelimiterPair getDelimiters() { return delimiters; }
+	public String getMessage() {
+		return message;
+	}
+
+	public String getInputSource() {
+		return inputSource;
+	}
+
+	public String getOutputSource() {
+		return outputSource;
+	}
+
+	public DelimiterPair getDelimiters() {
+		return delimiters;
+	}
 }
 
