@@ -5,5 +5,5 @@ package project.processapi;
  * This is a separate copy from the networkapi package to avoid cross-package dependencies.
  */
 public interface OutputSource {
-    String getLocation();
+	String getLocation();
 }
