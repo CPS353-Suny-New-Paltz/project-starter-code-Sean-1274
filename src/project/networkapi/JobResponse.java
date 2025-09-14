@@ -10,12 +10,7 @@ public class JobResponse {
         this.message = message;
     }
 
-<<<<<<< HEAD
     public String getMessage() { 
     	return message; 
     	}
 }
-=======
-    public String getMessage() { return message; }
-}
->>>>>>> c633fe98e20bbfc6c229825e0e9f393cf70145c9
