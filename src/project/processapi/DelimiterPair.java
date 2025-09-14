@@ -1,7 +1,8 @@
-package project.networkapi;
+package project.processapi;
 
 /**
- * Represents delimiters for formatting results.
+ * Defines delimiters for formatting results for the data storage system.
+ * This is a separate copy from the networkapi package.
  */
 public class DelimiterPair {
 	private final String pairDelimiter;
@@ -12,17 +13,15 @@ public class DelimiterPair {
 		this.resultDelimiter = resultDelimiter;
 	}
 
-	// Defaults if user doesn’t specify
 	public static DelimiterPair defaultDelimiters() {
 		return new DelimiterPair(";", ":");
 	}
 
 	public String getPairDelimiter() {
-		return pairDelimiter; 
+		return pairDelimiter;
 	}
-	public String getResultDelimiter() { 
-		return resultDelimiter; 
+
+	public String getResultDelimiter() {
+		return resultDelimiter;
 	}
 }
-
-

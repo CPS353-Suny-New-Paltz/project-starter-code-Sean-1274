@@ -6,3 +6,5 @@ package project.networkapi;
 public interface InputSource {
     String getLocation();  // e.g., file path, DB URI
 }
+
+
