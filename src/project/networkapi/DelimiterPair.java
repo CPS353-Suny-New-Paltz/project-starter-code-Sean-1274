@@ -20,3 +20,5 @@ public class DelimiterPair {
     public String getPairDelimiter() { return pairDelimiter; }
     public String getResultDelimiter() { return resultDelimiter; }
 }
+
+
