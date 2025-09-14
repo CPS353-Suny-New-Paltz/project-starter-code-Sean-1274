@@ -1,70 +1,46 @@
 package project.networkapi;
 
 /**
- * Represents a complete job submission request to the compute engine.
- * This class encapsulates all the parameters required to submit a computation job
- * in a single, cohesive object. Using a JobRequest simplifies the API method signature
- * and makes it easier to extend with additional parameters in the future.
+ * Represents a job request submitted by the user.
  * 
- * Contains:
- * - InputSource: The source of data for computation
- * - OutputSource: The destination for computation results
- * - DelimiterPair: Custom delimiters for formatting output (optional, can be null)
+ * Contains metadata about:
+ * - Where input comes from (InputSource)
+ * - Where output should go (OutputSource)
+ * - How results should be formatted (DelimiterPair)
  */
 public class JobRequest {
 	private final InputSource inputSource;
 	private final OutputSource outputSource;
-	private final DelimiterPair delimiterPair;
+	private final DelimiterPair delimiters;
 
-	/**
-	 * Constructs a new JobRequest with the specified parameters.
-	 *
-	 * @param inputSource   The source from which input data will be read
-	 * @param outputSource  The destination where output results will be written
-	 * @param delimiterPair The delimiters to use for formatting output (can be null for defaults)
-	 */
-	public JobRequest(InputSource inputSource, OutputSource outputSource, DelimiterPair delimiterPair) {
+	public JobRequest(InputSource inputSource,
+			OutputSource outputSource,
+			DelimiterPair delimiters) {
 		this.inputSource = inputSource;
 		this.outputSource = outputSource;
-		this.delimiterPair = delimiterPair;
+		// If no delimiters provided, fall back to defaults
+		this.delimiters = (delimiters != null)
+				? delimiters
+						: DelimiterPair.defaultDelimiters();
 	}
 
-	/**
-	 * Returns the input source for this job request.
-	 *
-	 * @return The InputSource specifying where to read data from
-	 */
-	public InputSource getInputSource() {
-		return inputSource;
+	public InputSource getInputSource() { 
+		return inputSource; 
+	}
+	public OutputSource getOutputSource() { 
+		return outputSource; 
+	}
+	public DelimiterPair getDelimiters() { 
+		return delimiters; 
 	}
 
-	/**
-	 * Returns the output source for this job request.
-	 *
-	 * @return The OutputSource specifying where to write results
-	 */
-	public OutputSource getOutputSource() {
-		return outputSource;
-	}
-
-	/**
-	 * Returns the delimiter pair for this job request.
-	 * May return null if no custom delimiters were specified.
-	 *
-	 * @return The DelimiterPair for formatting, or null if not specified
-	 */
-	public DelimiterPair getDelimiterPair() {
-		return delimiterPair;
-	}
-
-	/**
-	 * Returns the delimiters to be used for this job, falling back to system defaults
-	 * if no custom delimiters were provided. This is a convenience method that ensures
-	 * we always have a valid DelimiterPair instance.
-	 *
-	 * @return The DelimiterPair to use (either custom or default)
-	 */
-	public DelimiterPair getDelimitersOrDefault() {
-		return delimiterPair != null ? delimiterPair : DelimiterPair.defaultDelimiters();
+	@Override
+	public String toString() {
+		return "JobRequest{" +
+				"input=" + inputSource.getLocation() +
+				", output=" + outputSource.getLocation() +
+				", delimiters=" + delimiters.getPairDelimiter() +
+				"|" + delimiters.getResultDelimiter() +
+				'}';
 	}
 }
