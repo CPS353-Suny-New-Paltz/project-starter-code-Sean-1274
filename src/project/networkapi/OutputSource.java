@@ -1,9 +1,11 @@
 package project.networkapi;
 
 /**
- * Represents a generalized destination for output data.
+ * Represents a generic output destination.
  */
 public interface OutputSource {
-	String getLocation(); // Return location as a string
+    String getLocation();  // e.g., file path, DB URI
 }
+
+
 

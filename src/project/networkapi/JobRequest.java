@@ -1,5 +1,6 @@
 package project.networkapi;
 
+
 /**
  * Represents a complete job submission request to the compute engine.
  * This class encapsulates all the parameters required to submit a computation job
@@ -68,3 +69,4 @@ public class JobRequest {
 		return delimiterPair != null ? delimiterPair : DelimiterPair.defaultDelimiters();
 	}
 }
+

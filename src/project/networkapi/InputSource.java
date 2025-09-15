@@ -1,9 +1,10 @@
 package project.networkapi;
 
 /**
- * Represents a generalized source of input data.
+ * Represents a generic input source.
  */
 public interface InputSource {
-	String getLocation(); // Return location as a string
+    String getLocation();  // e.g., file path, DB URI
 }
+
 
