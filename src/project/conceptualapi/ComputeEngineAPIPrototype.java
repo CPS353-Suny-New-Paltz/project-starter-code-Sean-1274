@@ -22,3 +22,4 @@ public class ComputeEngineAPIPrototype {
         // Display result
         System.out.println("Prototype Response: " + response.getResult());
     }
+}
