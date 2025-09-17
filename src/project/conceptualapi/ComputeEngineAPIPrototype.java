@@ -3,10 +3,22 @@ package project.conceptualapi;
 import project.annotations.ConceptualAPIPrototype;
 
 /**
- * Prototype implementation of the Conceptual API.
+ * Prototype class for testing ConceptualAPI.
  */
+public class ComputeEngineAPIPrototype {
 
-public interface ComputeEngineAPIPrototype {
-	@ConceptualAPIPrototype
-    ComputationResponse runPrototype(ComputationRequest request);
+    /**
+     * Prototype method demonstrating API usage with a sample request.
+     */
+    @ConceptualAPIPrototype
+    public void runPrototype(ComputeEngineAPI api) {
+        // Create a sample request
+        ComputationRequest request = new BasicComputationRequest(5, ComputationMode.FACTORIAL);
+
+        // Call the API
+        ComputationResponse response = api.compute(request);
+
+        // Display result
+        System.out.println("Prototype Response: " + response.getResult());
+    }
 }
