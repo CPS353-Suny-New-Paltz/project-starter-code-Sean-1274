@@ -1,6 +1,6 @@
 package project.networkapi;
 
 public interface InputResponse {
-    RequestStatus getStatus();   // ACCEPTED or REJECTED
-    String getMessage();
+    RequestStatus getStatus();   // Returns whether input source configuration was ACCEPTED or REJECTED
+    String getMessage();         // Contains detailed message (error information or success confirmation)
 }
