@@ -3,6 +3,7 @@ package project.conceptualapi;
 import project.annotations.ConceptualAPIPrototype;
 
 /**
+
  * Prototype class for testing ConceptualAPI.
  */
 public class ComputeEngineAPIPrototype {
@@ -21,4 +22,3 @@ public class ComputeEngineAPIPrototype {
         // Display result
         System.out.println("Prototype Response: " + response.getResult());
     }
-}

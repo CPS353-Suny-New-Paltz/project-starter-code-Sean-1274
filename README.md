@@ -1,3 +1,7 @@
 # Software Engineering Project Starter Code
 
-This repo will start you off with an initial configuration that you'll modify as part of Checkpoint 1. As part of the modifications, you'll eventually delete the contents of this README and replace it with documentation for your project.
+Chosen computation: The system will compute the factorial of a given input integer.
+Description: Given a positive integer n, the system will run the product of all positive integers less than or equal to n.
+![System Diagram](https://github.com/CPS353-Suny-New-Paltz/project-starter-code-Sean-1274/blob/main/images/Checkpoint2_Diagram.jpeg?raw=true)
+
+
