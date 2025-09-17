@@ -1,26 +1,11 @@
 package project.conceptualapi;
+
 import project.annotations.ConceptualAPI;
 
-/** 
- * API between compute engine components: 
- * - User: Computation Component (does actual processing)
- * - Provider: Initialization Component (handles setup and I/O)
+/**
+ * Conceptual API between the job I/O handler and the computation engine.
  */
 @ConceptualAPI
 public interface ComputeEngineAPI {
-    
-    /** Initialize computation job and return initialization response */
-    JobInitResponse initializeComputation(JobConfig config);
-    
-    /** Read input data and return data response */
-    DataResponse readInputData();
-    
-    /** Write processed results and return write confirmation */
-    WriteResponse writeProcessedResults(ProcessedData results);
-    
-    /** Get job status and return status information */
-    JobStatusResponse getComputationStatus();
-    
-    /** Finalize job and return completion response */
-    CompletionResponse finalizeComputation();
+    ComputationResponse compute(ComputationRequest request);
 }
