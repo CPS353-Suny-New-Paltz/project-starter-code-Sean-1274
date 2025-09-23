@@ -27,6 +27,7 @@ public class UserComputeAPIPrototype {
         System.out.println("Output Response: " + outRes.getStatus() + " - " + outRes.getMessage());
         System.out.println("Delimiter Response: " + delimRes.getStatus() 
                            + " - " + delimRes.getAppliedDelimiters());
+
         // NEW: Job completion check with proper response
         String jobId = "job_123";
         JobStatusRequest statusReq = new BasicJobStatusRequest(jobId);
@@ -35,5 +36,7 @@ public class UserComputeAPIPrototype {
         System.out.println("Job Status: " + statusRes.getStatus() + 
                           " - Progress: " + statusRes.getProgress() + "%" +
                           " - Message: " + statusRes.getMessage());
+
+
     }
 }

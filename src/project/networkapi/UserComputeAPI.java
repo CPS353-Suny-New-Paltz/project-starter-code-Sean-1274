@@ -17,7 +17,9 @@ public interface UserComputeAPI {
     OutputResponse setOutputDestination(OutputRequest request);
 
     DelimiterResponse configureDelimiters(DelimiterRequest request);
+
     
     // NEW: Job completion check with proper response object
     JobStatusResponse checkJobCompletion(JobStatusRequest request);
+
 }
