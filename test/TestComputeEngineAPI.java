@@ -2,10 +2,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import project.conceptualapi.*;
+// Specific imports instead of .*
+import project.conceptualapi.ComputeEngineAPI;
+import project.conceptualapi.EmptyComputeEngineAPI;
+import project.conceptualapi.ComputationRequest;
+import project.conceptualapi.ComputationResponse;
+import project.conceptualapi.BasicComputationRequest;
+import project.conceptualapi.ComputationMode;
 import project.networkapi.UserComputeAPI;
 import project.datastoreapi.DataStoreAPI;
 
