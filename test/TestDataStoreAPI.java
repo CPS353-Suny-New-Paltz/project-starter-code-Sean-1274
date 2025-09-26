@@ -1,11 +1,26 @@
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import project.datastoreapi.*;
+// Specific imports instead of .*
+import project.datastoreapi.DataStoreAPI;
+import project.datastoreapi.EmptyDataStoreAPI;
+import project.datastoreapi.DataReadRequest;
+import project.datastoreapi.DataReadResponse;
+import project.datastoreapi.DataWriteRequest;
+import project.datastoreapi.DataWriteResponse;
+import project.datastoreapi.DataStreamRequest;
+import project.datastoreapi.DataStreamResponse;
+import project.datastoreapi.RequestStatus;
+import project.datastoreapi.DataFormat;
+import project.datastoreapi.DataStreamMode;
 import project.conceptualapi.ComputeEngineAPI;
 
 class TestDataStoreAPI {
