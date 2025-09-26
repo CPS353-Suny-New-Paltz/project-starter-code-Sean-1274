@@ -2,10 +2,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import project.networkapi.*;
+// Specific imports instead of .*
+import project.networkapi.UserComputeAPI;
+import project.networkapi.EmptyUserComputeAPI;
+import project.networkapi.InputRequest;
+import project.networkapi.InputResponse;
+import project.networkapi.OutputRequest;
+import project.networkapi.OutputResponse;
+import project.networkapi.DelimiterRequest;
+import project.networkapi.DelimiterResponse;
+import project.networkapi.JobStatusRequest;
+import project.networkapi.JobStatusResponse;
+import project.networkapi.RequestStatus;
+import project.networkapi.DelimiterMode;
+import project.networkapi.CompletionStatus;
 import project.conceptualapi.ComputeEngineAPI;
 
 class TestUserComputeAPI {
