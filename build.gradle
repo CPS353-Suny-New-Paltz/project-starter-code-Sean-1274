@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-eclipse.project.name = 'FillThisIn' 
+eclipse.project.name = 'Software_Project'
 
 sourceSets {
 	main {
@@ -28,9 +28,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
-<<<<<<< Updated upstream
-}
-=======
+
     
      // Filter out all failing tests for checkpoint 3
     filter {
@@ -40,4 +38,6 @@ test {
    
     }
 }
->>>>>>> Stashed changes
+
+}
+
