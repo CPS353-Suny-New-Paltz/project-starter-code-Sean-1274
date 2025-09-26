@@ -17,6 +17,7 @@ public class BasicComputationRequest implements ComputationRequest {
         return input;
     }
 
+    @Override
     public ComputationMode getMode() {
         return mode;
     }

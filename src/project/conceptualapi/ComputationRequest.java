@@ -5,4 +5,10 @@ package project.conceptualapi;
  */
 public interface ComputationRequest {
     int getInput();
+    ComputationMode getMode();
 }
+
+
+
+
+
