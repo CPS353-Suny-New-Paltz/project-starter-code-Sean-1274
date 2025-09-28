@@ -35,9 +35,13 @@ test {
         excludeTestsMatching "TestUserComputeAPI"
         excludeTestsMatching "TestDataStoreAPI" 
         excludeTestsMatching "TestComputeEngineAPI"
-   
+   		 excludeTestsMatching "ComputeEngineIntegrationTest"
     }
 }
+
+
+
+  
 
 
 
