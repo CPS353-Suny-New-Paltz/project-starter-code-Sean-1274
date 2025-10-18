@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // Specific imports instead of .*
 import project.conceptualapi.ComputeEngineAPI;
@@ -35,50 +37,85 @@ class TestComputeEngineAPI {
     }
 
     @Test
-    void testCompute() {
-        // Arrange
-        ComputationRequest mockRequest = mock(ComputationRequest.class);
-        when(mockRequest.getInput()).thenReturn(5);
-        when(mockRequest.getMode()).thenReturn(ComputationMode.FACTORIAL); // Now we can mock this!
-
-        // Act
-        ComputationResponse response = computeEngineAPI.compute(mockRequest);
-
-        // Assert - Should FAIL initially (expecting valid result but getting "not yet functional")
-        assertNotNull(response, "Response should not be null");
-        assertNotEquals("Empty implementation - not yet functional", response.getResult(),
-                      "Implementation should return actual computation result");
-    }   
-        // For factorial of 5, we might expect "120" or similar
-        // But for now, we just expect it NOT to be the empty implementation message
-    
-
-    @Test
-    void testComputeWithBasicRequest() {
-        // Arrange - Use the actual BasicComputationRequest implementation
+    void testComputeFactorialOfFive() {
+        // Arrange - Test specific factorial computation: 5! = 120
         ComputationRequest request = new BasicComputationRequest(5, ComputationMode.FACTORIAL);
 
         // Act
         ComputationResponse response = computeEngineAPI.compute(request);
 
-        // Assert - Should FAIL initially
-        assertNotNull(response);
+        // Assert - Check for exact factorial result
+        assertNotNull(response, "Response should not be null");
+        assertEquals("120", response.getResult(),
+                    "Factorial of 5 should be 120");
         assertFalse(response.getResult().contains("not yet functional"),
-                   "Implementation should return actual computation result, not placeholder");
+                   "Implementation should return actual computation result");
     }
 
     @Test
-    void testComputeWithDifferentInput() {
-        // Arrange
-        ComputationRequest mockRequest = mock(ComputationRequest.class);
-        when(mockRequest.getInput()).thenReturn(10); // Different input
+    void testComputeFactorialOfTen() {
+        // Arrange - Test factorial of 10: 10! = 3628800
+        ComputationRequest request = new BasicComputationRequest(10, ComputationMode.FACTORIAL);
 
         // Act
-        ComputationResponse response = computeEngineAPI.compute(mockRequest);
+        ComputationResponse response = computeEngineAPI.compute(request);
 
-        // Assert - Should FAIL initially
-        assertNotNull(response);
-        assertNotEquals("Empty implementation - not yet functional", response.getResult(),
-                      "Implementation should handle different inputs correctly");
+        // Assert - Check for exact factorial result
+        assertEquals("3628800", response.getResult(),
+                    "Factorial of 10 should be 3628800");
+    }
+
+    @Test
+    void testComputeFactorialOfZero() {
+        // Arrange - Test edge case: 0! = 1
+        ComputationRequest request = new BasicComputationRequest(0, ComputationMode.FACTORIAL);
+
+        // Act
+        ComputationResponse response = computeEngineAPI.compute(request);
+
+        // Assert - Check that factorial of 0 returns 1
+        assertEquals("1", response.getResult(),
+                    "Factorial of 0 should be 1");
+    }
+
+    @Test
+    void testComputeFactorialOfOne() {
+        // Arrange - Test edge case: 1! = 1
+        ComputationRequest request = new BasicComputationRequest(1, ComputationMode.FACTORIAL);
+
+        // Act
+        ComputationResponse response = computeEngineAPI.compute(request);
+
+        // Assert - Check that factorial of 1 returns 1
+        assertEquals("1", response.getResult(),
+                    "Factorial of 1 should be 1");
+    }
+
+    @Test
+    void testComputeWithLargeNumber() {
+        // Arrange - Test factorial of 25 (very large number)
+        ComputationRequest request = new BasicComputationRequest(25, ComputationMode.FACTORIAL);
+
+        // Act
+        ComputationResponse response = computeEngineAPI.compute(request);
+
+        // Assert - Check for exact large factorial result
+        assertEquals("15511210043330985984000000", response.getResult(),
+                    "Factorial of 25 should be 15511210043330985984000000");
+    }
+
+    @Test
+    void testComputeWithPrototypeMode() {
+        // Arrange - Test PROTOTYPE_ONLY mode (should return different result format)
+        ComputationRequest request = new BasicComputationRequest(5, ComputationMode.PROTOTYPE_ONLY);
+
+        // Act
+        ComputationResponse response = computeEngineAPI.compute(request);
+
+        // Assert - Check for prototype-specific response format
+        assertNotNull(response.getResult());
+        assertTrue(response.getResult().toLowerCase().contains("prototype") ||
+                  response.getResult().toLowerCase().contains("test"),
+                 "Prototype mode should return test/prototype specific result");
     }
 }
