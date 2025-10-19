@@ -2,6 +2,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,6 +24,8 @@ import project.networkapi.JobStatusResponse;
 import project.networkapi.RequestStatus;
 import project.networkapi.DelimiterMode;
 import project.networkapi.CompletionStatus;
+import project.conceptualapi.ComputationRequest;
+import project.conceptualapi.ComputationResponse;
 import project.conceptualapi.ComputeEngineAPI;
 
 class TestUserComputeAPI {
