@@ -1,4 +1,6 @@
 import project.datastoreapi.DataStoreAPI;
+import project.datastoreapi.BasicDataReadResponse;
+import project.datastoreapi.BasicDataWriteResponse;
 import project.datastoreapi.DataReadRequest;
 import project.datastoreapi.DataReadResponse;
 import project.datastoreapi.DataWriteRequest;
@@ -94,5 +96,23 @@ public class MemoryDataStore implements DataStoreAPI {
 	// Let tests pre-set output data if needed
 	public void setOutputData(List<String> outputData) {
 		this.currentOutputData = new ArrayList<>(outputData);  // Store a copy
+	}
+	// Add these methods to your MemoryDataStore class
+	public DataReadResponse readData(MemoryInputConfig memoryInput) {
+	    this.currentInputData = memoryInput.getInputData();
+	    int[] dataArray = currentInputData.stream().mapToInt(i -> i).toArray();
+	    return new BasicDataReadResponse(
+	        RequestStatus.ACCEPTED, 
+	        "Successfully read " + currentInputData.size() + " integers from memory",
+	        dataArray
+	    );
+	}
+
+	public DataWriteResponse writeData(MemoryOutputConfig memoryOutput) {
+	    this.currentOutputData = memoryOutput.getOutputData();
+	    return new BasicDataWriteResponse(
+	        RequestStatus.ACCEPTED,
+	        "Output configured for memory storage with capacity: " + currentOutputData.size()
+	    );
 	}
 }
