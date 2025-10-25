@@ -16,7 +16,6 @@ import project.datastoreapi.DataStoreAPI;
 
 /**
  * Additional test covering edge cases and boundary conditions in ComputeEngineAPI
- * Fulfills Checkpoint 4 Requirement #5: "add (at least) one additional test based on analyzing your implementation"
  */
 class TestComputeEngineEdgeCases {
 
