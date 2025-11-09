@@ -19,13 +19,9 @@ import java.math.BigInteger;
  */
 public class EmptyComputeEngineAPI implements ComputeEngineAPI {
 
-    // Bidirectional communication with both other APIs
-    private final UserComputeAPI networkAPI;
-    private final DataStoreAPI dataStoreAPI;
+   
 
-    public EmptyComputeEngineAPI(UserComputeAPI networkAPI, DataStoreAPI dataStoreAPI) {
-        this.networkAPI = networkAPI;
-        this.dataStoreAPI = dataStoreAPI;
+    public EmptyComputeEngineAPI() {
     }
 
     @Override
@@ -107,38 +103,4 @@ public class EmptyComputeEngineAPI implements ComputeEngineAPI {
         return new BasicComputationResponse(prototypeResult);
     }
 
-    /**
-     * Helper method to read input data from DataStore (for future integration)
-     */
-    private int[] readInputData(String source) {
-        try {
-            DataReadRequest readRequest = new BasicDataReadRequest(source, DataFormat.INTEGER_ARRAY);
-            DataReadResponse readResponse = dataStoreAPI.readData(readRequest);
-            
-            if (readResponse.getStatus() == RequestStatus.ACCEPTED) {
-                return readResponse.getData();
-            } else {
-                System.err.println("Failed to read input data: " + readResponse.getMessage());
-                return new int[0];
-            }
-        } catch (Exception e) {
-            System.err.println("Error reading input data: " + e.getMessage());
-            return new int[0];
-        }
-    }
-
-    /**
-     * Helper method to write results to DataStore (for future integration)
-     */
-    private boolean writeOutputData(String destination, String[] results) {
-        try {
-            DataWriteRequest writeRequest = new BasicDataWriteRequest(destination, DataFormat.TEXT);
-            DataWriteResponse writeResponse = dataStoreAPI.writeData(writeRequest);
-            
-            return writeResponse.getStatus() == RequestStatus.ACCEPTED;
-        } catch (Exception e) {
-            System.err.println("Error writing output data: " + e.getMessage());
-            return false;
-        }
-    }
 }

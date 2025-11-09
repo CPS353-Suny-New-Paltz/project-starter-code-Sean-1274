@@ -33,7 +33,7 @@ class TestDataStoreAPI {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        dataStoreAPI = new EmptyDataStoreAPI(mockComputeEngine);
+        dataStoreAPI = new EmptyDataStoreAPI();
     }
 
     @Test

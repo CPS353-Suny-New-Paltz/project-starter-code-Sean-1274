@@ -33,7 +33,7 @@ class TestComputeEngineAPI {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        computeEngineAPI = new EmptyComputeEngineAPI(mockNetworkAPI, mockDataStoreAPI);
+        computeEngineAPI = new EmptyComputeEngineAPI();
     }
 
     @Test

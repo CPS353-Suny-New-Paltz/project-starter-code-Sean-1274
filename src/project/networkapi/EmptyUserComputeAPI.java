@@ -1,6 +1,14 @@
 package project.networkapi;
 
 import project.conceptualapi.ComputeEngineAPI;
+import project.datastoreapi.DataStoreAPI;
+import project.datastoreapi.DataReadRequest;
+import project.datastoreapi.DataWriteRequest;
+import project.datastoreapi.BasicDataReadRequest;
+import project.datastoreapi.BasicDataWriteRequest;
+import project.datastoreapi.DataFormat;
+import project.datastoreapi.DataReadResponse;
+import project.datastoreapi.DataWriteResponse;
 import project.conceptualapi.ComputationRequest;
 import project.conceptualapi.BasicComputationRequest;
 import project.conceptualapi.ComputationResponse;
@@ -17,6 +25,7 @@ import java.util.Map;
 public class EmptyUserComputeAPI implements UserComputeAPI {
 
     private final ComputeEngineAPI computeEngine;
+    private final DataStoreAPI dataStore;
     
     // Job tracking for status monitoring
     private final Map<String, JobInfo> jobTracker;
@@ -26,31 +35,22 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
     private String currentOutputDestination;
     private String currentDelimiters = ",";
     private DelimiterMode currentDelimiterMode = DelimiterMode.DEFAULT;
-
-    // Constructor only needs the ComputeEngineAPI
-    public EmptyUserComputeAPI(ComputeEngineAPI computeEngine) {
+    
+    public EmptyUserComputeAPI(ComputeEngineAPI computeEngine, DataStoreAPI dataStore) {
         this.computeEngine = computeEngine;
+        this.dataStore = dataStore;
         this.jobTracker = new HashMap<>();
     }
 
     @Override
     public InputResponse setInputSource(InputRequest request) {
         try {
-            // Validate the request
             if (request == null || request.getSource() == null || request.getSource().trim().isEmpty()) {
                 return new BasicInputResponse(RequestStatus.REJECTED, 
                     "Input source cannot be null or empty");
             }
 
             String source = request.getSource().trim();
-            
-            // Validate source format
-            if (!isValidSource(source)) {
-                return new BasicInputResponse(RequestStatus.REJECTED,
-                    "Invalid input source format: " + source);
-            }
-
-            // Store the input source for later use
             this.currentInputSource = source;
             
             System.out.println("Input source configured: " + source);
@@ -66,21 +66,12 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
     @Override
     public OutputResponse setOutputDestination(OutputRequest request) {
         try {
-            // Validate the request
             if (request == null || request.getDestination() == null || request.getDestination().trim().isEmpty()) {
                 return new BasicOutputResponse(RequestStatus.REJECTED,
                     "Output destination cannot be null or empty");
             }
 
             String destination = request.getDestination().trim();
-            
-            // Validate destination format
-            if (!isValidDestination(destination)) {
-                return new BasicOutputResponse(RequestStatus.REJECTED,
-                    "Invalid output destination format: " + destination);
-            }
-
-            // Store the output destination for later use
             this.currentOutputDestination = destination;
             
             System.out.println("Output destination configured: " + destination);
@@ -96,7 +87,6 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
     @Override
     public DelimiterResponse configureDelimiters(DelimiterRequest request) {
         try {
-            // Validate the request
             if (request == null) {
                 return new BasicDelimiterResponse("", RequestStatus.REJECTED,
                     "Delimiter request cannot be null");
@@ -105,19 +95,16 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
             DelimiterMode mode = request.getMode();
             String delimiters = request.getDelimiters();
             
-            // Apply configuration based on mode
             String appliedDelimiters;
             String message;
             
             switch (mode) {
                 case DEFAULT:
-                    // Use system default delimiters (ignore user-provided ones)
-                    appliedDelimiters = ","; // System default
+                    appliedDelimiters = ",";
                     message = "Default delimiters applied: " + appliedDelimiters;
                     break;
                     
                 case CUSTOM:
-                    // Validate and use custom delimiters
                     if (delimiters == null || delimiters.trim().isEmpty()) {
                         return new BasicDelimiterResponse("", RequestStatus.REJECTED,
                             "Custom delimiters cannot be null or empty");
@@ -131,7 +118,6 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                         "Unknown delimiter mode: " + mode);
             }
             
-            // Update current configuration
             this.currentDelimiters = appliedDelimiters;
             this.currentDelimiterMode = mode;
             
@@ -147,7 +133,6 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
     @Override
     public JobStatusResponse checkJobCompletion(JobStatusRequest request) {
         try {
-            // Validate the request
             if (request == null || request.getJobIdentifier() == null || 
                 request.getJobIdentifier().trim().isEmpty()) {
                 return new BasicJobStatusResponse(CompletionStatus.JOB_NOT_FOUND,
@@ -162,7 +147,6 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                     "Job not found: " + jobId, 0, RequestStatus.REJECTED);
             }
 
-            // Return the stored job status
             return new BasicJobStatusResponse(
                 jobInfo.status, 
                 jobInfo.message, 
@@ -176,11 +160,6 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
         }
     }
 
-    /**
-     * Additional method to start computation - fulfills Requirement 2a
-     * Receives request to start computation and returns suitable result status
-     * Communicates ONLY with ComputeEngineAPI
-     */
     public JobStatusResponse startComputation() {
         try {
             // Validate that input and output are configured
@@ -190,83 +169,108 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                     0, RequestStatus.REJECTED);
             }
 
-            // Generate unique job ID
             String jobId = "job_" + System.currentTimeMillis();
             
-            // Update job status to running
             jobTracker.put(jobId, new JobInfo(
                 CompletionStatus.JOB_RUNNING,
-                "Starting computation with input: " + currentInputSource + ", output: " + currentOutputDestination,
+                "Starting file-based computation: " + currentInputSource + " → " + currentOutputDestination,
                 25
             ));
 
-            // **Requirement 2: Coordinate through ComputeEngineAPI only**
-            // The ComputeEngineAPI will handle the actual computation and DataStoreAPI communication
-            System.out.println("Coordinating computation through ComputeEngineAPI...");
+            // 1. Read input data from file
+            DataReadRequest readRequest = new BasicDataReadRequest(currentInputSource, DataFormat.INTEGER_ARRAY);
+            DataReadResponse readResponse = dataStore.readData(readRequest);
             
-            // For now, we'll create a simple computation request to demonstrate the coordination
-            // In a full implementation, the ComputeEngineAPI would handle the file I/O through DataStoreAPI
-            ComputationRequest sampleRequest = new BasicComputationRequest(5, ComputationMode.FACTORIAL);
-            ComputationResponse response = computeEngine.compute(sampleRequest);
-            
-            // Update job progress based on computation result
+            if (readResponse.getStatus() != project.datastoreapi.RequestStatus.ACCEPTED) {
+                throw new RuntimeException("Failed to read input data: " + readResponse.getMessage());
+            }
+
             jobTracker.put(jobId, new JobInfo(
                 CompletionStatus.JOB_RUNNING,
-                "Computation in progress. Sample result: " + response.getResult(),
+                "Data read successfully, starting computation",
+                50
+            ));
+
+            // 2. Process each input number through computation engine
+            int[] inputData = readResponse.getData();
+            StringBuilder results = new StringBuilder();
+            
+            for (int i = 0; i < inputData.length; i++) {
+                ComputationRequest compRequest = new BasicComputationRequest(inputData[i], ComputationMode.FACTORIAL);
+                ComputationResponse compResponse = computeEngine.compute(compRequest);
+                
+                // Format like "5=120" using the configured delimiter
+                results.append(inputData[i])
+                      .append(currentDelimiters)  // Use the configured delimiter
+                      .append(compResponse.getResult());
+                
+                // Add comma between results (except for the last one)
+                if (i < inputData.length - 1) {
+                    results.append(",");
+                }
+            }
+
+            jobTracker.put(jobId, new JobInfo(
+                CompletionStatus.JOB_RUNNING,
+                "Computation completed, writing results",
                 75
             ));
 
-            // Simulate completion (in full implementation, this would be based on actual completion)
+            // 3. Write results to output file - FIXED THIS PART!
+            String outputData = results.toString();
+            DataWriteRequest writeRequest = new BasicDataWriteRequest(currentOutputDestination, DataFormat.TEXT, outputData);
+            DataWriteResponse writeResponse = dataStore.writeData(writeRequest);
+            
+            if (writeResponse.getStatus() != project.datastoreapi.RequestStatus.ACCEPTED) {
+                throw new RuntimeException("Failed to write results: " + writeResponse.getMessage());
+            }
+
+            // 4. Mark job as completed
             JobInfo completedJob = new JobInfo(
                 CompletionStatus.JOB_COMPLETED,
-                "Computation completed successfully. Input: " + currentInputSource + ", Output: " + currentOutputDestination,
+                "Computation completed successfully. Processed " + inputData.length + " numbers",
                 100
             );
             jobTracker.put(jobId, completedJob);
             
-            System.out.println("Computation coordination completed for job: " + jobId);
             return new BasicJobStatusResponse(
                 CompletionStatus.JOB_COMPLETED,
                 "Computation completed successfully for job: " + jobId,
                 100,
                 RequestStatus.ACCEPTED
             );
-            
         } catch (Exception e) {
-            // Mark job as failed
             String jobId = "job_" + System.currentTimeMillis();
             JobInfo failedJob = new JobInfo(
                 CompletionStatus.JOB_FAILED,
-                "Computation coordination failed: " + e.getMessage(),
+                "Computation failed: " + e.getMessage(),
                 100
             );
             jobTracker.put(jobId, failedJob);
             
-            System.err.println("Computation coordination failed: " + e.getMessage());
             return new BasicJobStatusResponse(
                 CompletionStatus.JOB_FAILED,
-                "Computation coordination failed: " + e.getMessage(),
+                "Computation failed: " + e.getMessage(),
                 100,
                 RequestStatus.ACCEPTED
             );
         }
+   
     }
 
-    /**
-     * Validates input source format
-     */
-    private boolean isValidSource(String source) {
-        // Basic validation
-        return source != null && !source.trim().isEmpty() && source.length() <= 255;
-    }
-
-    /**
-     * Validates output destination format
-     */
-    private boolean isValidDestination(String destination) {
-        // Basic validation
-        return destination != null && !destination.trim().isEmpty() && destination.length() <= 255;
-    }
+//    /**
+//     * Validates input source format
+//     */
+//    private boolean isValidSource(String source) {
+//        return source != null && !source.trim().isEmpty() && source.length() <= 255;
+//    }
+//
+//    /**
+//     * Validates output destination format
+//     */
+//    private boolean isValidDestination(String destination) {
+//        return destination != null && !destination.trim().isEmpty() && destination.length() <= 255;
+//    }
 
     /**
      * Inner class for tracking job information

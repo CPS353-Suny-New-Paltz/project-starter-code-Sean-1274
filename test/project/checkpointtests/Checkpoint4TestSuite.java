@@ -16,7 +16,7 @@ public class Checkpoint4TestSuite {
         Files.deleteIfExists(inputPath);
         
         // Updated to use comma-separated format that matches your DataStore implementation
-        Files.write(inputPath, "1,2,3".getBytes());
+        Files.write(inputPath, "1\n2\n3".getBytes()); // Instead of "1,2,3"
         
         ManualTestingFramework.main(new String[] {});
         

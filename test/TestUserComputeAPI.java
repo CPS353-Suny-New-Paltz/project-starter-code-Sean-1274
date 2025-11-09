@@ -27,18 +27,22 @@ import project.networkapi.CompletionStatus;
 import project.conceptualapi.ComputationRequest;
 import project.conceptualapi.ComputationResponse;
 import project.conceptualapi.ComputeEngineAPI;
+import project.datastoreapi.EmptyDataStoreAPI;
 
 class TestUserComputeAPI {
 
     @Mock
     private ComputeEngineAPI mockComputeEngine;
+    
+    @Mock
+    private EmptyDataStoreAPI mockDataStoreAPI;
 
     private EmptyUserComputeAPI userComputeAPI;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userComputeAPI = new EmptyUserComputeAPI(mockComputeEngine);
+        userComputeAPI = new EmptyUserComputeAPI(mockComputeEngine, mockDataStoreAPI);
     }
 
     @Test

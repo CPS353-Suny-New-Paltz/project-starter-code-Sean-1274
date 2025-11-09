@@ -5,6 +5,7 @@ package project.checkpointtests;
 import project.conceptualapi.EmptyComputeEngineAPI;
 import project.datastoreapi.EmptyDataStoreAPI;
 import project.networkapi.EmptyUserComputeAPI;
+import project.networkapi.JobStatusResponse;
 import project.networkapi.BasicInputRequest;
 import project.networkapi.BasicOutputRequest;
 import project.networkapi.BasicDelimiterRequest;
@@ -17,14 +18,14 @@ public class ManualTestingFramework {
 
     public static void main(String[] args) {
         // TODO 1: Instantiate real implementations of all 3 APIs
-        // Create DataStoreAPI first (it's the dependency for ComputeEngineAPI)
-        EmptyDataStoreAPI dataStore = new EmptyDataStoreAPI(null);
+       
+        EmptyDataStoreAPI dataStore = new EmptyDataStoreAPI();
         
-        // Create ComputeEngineAPI with the DataStoreAPI
-        EmptyComputeEngineAPI computeEngine = new EmptyComputeEngineAPI(null, dataStore);
+        // Create ComputeEngineAPI 
+        EmptyComputeEngineAPI computeEngine = new EmptyComputeEngineAPI();
         
-        // Create UserComputeAPI with the ComputeEngineAPI
-        EmptyUserComputeAPI userComputeAPI = new EmptyUserComputeAPI(computeEngine);
+        // Create UserComputeAPI with the ComputeEngineAPI and DataStoreAPI
+        EmptyUserComputeAPI userComputeAPI = new EmptyUserComputeAPI(computeEngine, dataStore);
 
         // TODO 2: Run a computation with input file and output file, delimiter ','
         try {
@@ -38,12 +39,9 @@ public class ManualTestingFramework {
             userComputeAPI.configureDelimiters(new BasicDelimiterRequest(",", DelimiterMode.CUSTOM));
             
             // Start the computation
-            userComputeAPI.startComputation();
+            JobStatusResponse result = userComputeAPI.startComputation();
             
-            System.out.println("Computation completed successfully!");
-            System.out.println("Input: " + INPUT);
-            System.out.println("Output: " + OUTPUT);
-            System.out.println("Delimiter: ','");
+            System.out.println("Computation completed! Status: " + result.getStatus());
             
         } catch (Exception e) {
             System.err.println("Error during computation: " + e.getMessage());
