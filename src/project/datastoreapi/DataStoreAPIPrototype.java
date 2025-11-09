@@ -9,7 +9,7 @@ public class DataStoreAPIPrototype {
     public void runPrototype(DataStoreAPI api) {
         // Create sample requests
         DataReadRequest readReq = new BasicDataReadRequest("input_data.txt", DataFormat.INTEGER_ARRAY);
-        DataWriteRequest writeReq = new BasicDataWriteRequest("output_data.txt", DataFormat.INTEGER_ARRAY);
+        DataWriteRequest writeReq = new BasicDataWriteRequest("output_data.txt", DataFormat.INTEGER_ARRAY, "sample output data");
         DataStreamRequest streamReq = new BasicDataStreamRequest(DataStreamMode.BATCH, 1024, DataFormat.INTEGER_ARRAY);
 
         // Execute API calls
