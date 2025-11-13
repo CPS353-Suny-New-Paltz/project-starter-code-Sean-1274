@@ -201,12 +201,12 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                 
                 // Format like "5=120" using the configured delimiter
                 results.append(inputData[i])
-                      .append(currentDelimiters)  // Use the configured delimiter
+                      .append("=")  // Use the configured delimiter
                       .append(compResponse.getResult());
                 
                 // Add comma between results (except for the last one)
                 if (i < inputData.length - 1) {
-                    results.append(",");
+                    results.append(currentDelimiters);
                 }
             }
 
