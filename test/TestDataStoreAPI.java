@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-// Specific imports instead of .*
 import project.datastoreapi.DataStoreAPI;
 import project.datastoreapi.EmptyDataStoreAPI;
 import project.datastoreapi.DataReadRequest;
@@ -21,6 +20,7 @@ import project.datastoreapi.DataStreamResponse;
 import project.datastoreapi.RequestStatus;
 import project.datastoreapi.DataFormat;
 import project.datastoreapi.DataStreamMode;
+import project.datastoreapi.BasicDataWriteRequest;
 import project.conceptualapi.ComputeEngineAPI;
 
 class TestDataStoreAPI {
@@ -38,40 +38,35 @@ class TestDataStoreAPI {
 
     @Test
     void testReadDataWithIntegerArrayFormat() {
-        // Arrange - Test reading from a file that doesn't exist (should handle gracefully)
+        // Arrange - Create a test file with one integer per line
+        String testFileName = "test_data_lines.txt";
+        createTestFileWithContent(testFileName, "1\n10\n25");
+        
         DataReadRequest mockRequest = mock(DataReadRequest.class);
-        when(mockRequest.getSource()).thenReturn("test_data_array.txt");
+        when(mockRequest.getSource()).thenReturn(testFileName);
         when(mockRequest.getFormat()).thenReturn(DataFormat.INTEGER_ARRAY);
 
         // Act
         DataReadResponse response = dataStoreAPI.readData(mockRequest);
 
-        // Assert - Check that it handles missing file properly
+        // Assert
         assertNotNull(response, "Response should not be null");
-        
-        // Since the file doesn't exist, it should return REJECTED status
-        if (response.getStatus() == RequestStatus.REJECTED) {
-            assertTrue(response.getMessage().contains("File not found") ||
-                      response.getMessage().contains("No valid integer data found"),
-                     "Should indicate file not found or no data");
-            assertEquals(0, response.getData().length,
-                       "Should return empty array for missing file");
-        } else {
-            // If file somehow exists, verify the response structure
-            assertNotNull(response.getData());
-            assertTrue(response.getMessage().contains("read") ||
-                      response.getMessage().contains("Successfully"),
-                     "Message should confirm data was read");
-        }
+        assertEquals(RequestStatus.ACCEPTED, response.getStatus(),
+                    "Should successfully read from existing file");
+        assertArrayEquals(new int[]{1, 10, 25}, response.getData(),
+                        "Should return exact data [1, 10, 25]");
+        assertTrue(response.getMessage().contains("Successfully read 3 integers"),
+                 "Message should confirm data was read");
+
+        // Clean up
+        deleteTestFile(testFileName);
     }
 
     @Test
     void testReadDataWithSpecificContent() {
-        // Arrange - Create a temporary test file with known content
+        // Arrange - Create a temporary test file with known content (one per line)
         String testFileName = "test_known_data.txt";
-        
-        // Create the test file
-        createTestFileWithContent(testFileName, "1, 10, 25");
+        createTestFileWithContent(testFileName, "1\n10\n25");
         
         DataReadRequest mockRequest = mock(DataReadRequest.class);
         when(mockRequest.getSource()).thenReturn(testFileName);
@@ -108,19 +103,21 @@ class TestDataStoreAPI {
         // Assert - Should handle missing file gracefully
         assertEquals(RequestStatus.REJECTED, response.getStatus(),
                     "Non-existent file should return REJECTED status");
-        assertTrue(response.getMessage().contains("File not found") ||
-                  response.getMessage().contains("No valid integer data found"),
-                 "Should indicate file not found");
+        assertTrue(response.getMessage().contains("Error reading file") ||
+                  response.getMessage().contains("File not found"),
+                 "Should indicate file error");
         assertEquals(0, response.getData().length,
                    "Should return empty array for missing file");
     }
 
     @Test
     void testWriteDataWithConfirmation() {
-        // Arrange - Test data write operation
-        DataWriteRequest mockRequest = mock(DataWriteRequest.class);
-        when(mockRequest.getDestination()).thenReturn("output_results.txt");
-        when(mockRequest.getFormat()).thenReturn(DataFormat.INTEGER_ARRAY);
+        // Arrange - Test data write operation with actual data
+        DataWriteRequest mockRequest = new BasicDataWriteRequest(
+            "output_results.txt", 
+            DataFormat.TEXT, 
+            "test output data"
+        );
 
         // Act
         DataWriteResponse response = dataStoreAPI.writeData(mockRequest);
@@ -129,8 +126,33 @@ class TestDataStoreAPI {
         assertNotNull(response);
         assertEquals(RequestStatus.ACCEPTED, response.getStatus(),
                     "Valid write request should be accepted");
-        assertTrue(response.getMessage().contains("Write configuration accepted"),
-                 "Message should confirm write configuration was accepted");
+        assertTrue(response.getMessage().contains("Successfully wrote data to file"),
+                 "Message should confirm write operation");
+
+        // Clean up
+        deleteTestFile("output_results.txt");
+    }
+
+    @Test
+    void testWriteDataWithBasicDataWriteRequest() {
+        // Arrange - Test that BasicDataWriteRequest is properly handled
+        BasicDataWriteRequest writeRequest = new BasicDataWriteRequest(
+            "test_output.txt",
+            DataFormat.TEXT,
+            "sample data for testing"
+        );
+
+        // Act
+        DataWriteResponse response = dataStoreAPI.writeData(writeRequest);
+
+        // Assert
+        assertEquals(RequestStatus.ACCEPTED, response.getStatus(),
+                    "BasicDataWriteRequest should be accepted");
+        assertTrue(response.getMessage().contains("Successfully wrote"),
+                 "Should confirm successful write");
+
+        // Clean up
+        deleteTestFile("test_output.txt");
     }
 
     @Test
