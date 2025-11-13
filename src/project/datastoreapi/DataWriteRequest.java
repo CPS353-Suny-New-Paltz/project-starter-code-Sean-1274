@@ -7,4 +7,7 @@ public interface DataWriteRequest {
     
     /** Get data format for writing */
     DataFormat getFormat();
+    
+    /** Get the data to be written */
+    String getData();
 }

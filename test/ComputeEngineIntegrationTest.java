@@ -36,10 +36,10 @@ class ComputeEngineIntegrationTest {
         dataStore = new MemoryDataStore();
 
         // Create the Compute Engine with the in-memory data store
-        computeEngineAPI = new EmptyComputeEngineAPI(null, dataStore); // networkAPI is null for this test
+        computeEngineAPI = new EmptyComputeEngineAPI(); // networkAPI is null for this test
 
         // Create the User Compute API with the Compute Engine
-        userComputeAPI = new EmptyUserComputeAPI(computeEngineAPI);
+        userComputeAPI = new EmptyUserComputeAPI(computeEngineAPI, dataStore);
 
         // Create the output configuration to capture results
         outputConfig = new MemoryOutputConfig();
