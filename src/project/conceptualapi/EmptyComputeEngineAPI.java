@@ -1,16 +1,5 @@
 package project.conceptualapi;
 
-import project.networkapi.UserComputeAPI;
-import project.datastoreapi.DataStoreAPI;
-import project.datastoreapi.DataReadRequest;
-import project.datastoreapi.DataReadResponse;
-import project.datastoreapi.DataWriteRequest;
-import project.datastoreapi.DataWriteResponse;
-import project.datastoreapi.BasicDataReadRequest;
-import project.datastoreapi.BasicDataWriteRequest;
-import project.datastoreapi.DataFormat;
-import project.datastoreapi.RequestStatus;
-
 import java.math.BigInteger;
 
 /**
@@ -26,59 +15,69 @@ public class EmptyComputeEngineAPI implements ComputeEngineAPI {
 
     @Override
     public ComputationResponse compute(ComputationRequest request) {
-        // Validate the request
-        if (request == null) {
-            return new BasicComputationResponse("Error: Computation request cannot be null");
-        }
+        try {
+            // Validate the request
+            if (request == null) {
+                return new BasicComputationResponse("Error: Computation request cannot be null");
+            }
 
-        // Validate computation mode
-        ComputationMode mode = request.getMode();
-        if (mode == null) {
-            return new BasicComputationResponse("Error: Computation mode cannot be null");
-        }
+            // Validate computation mode
+            ComputationMode mode = request.getMode();
+            if (mode == null) {
+                return new BasicComputationResponse("Error: Computation mode cannot be null");
+            }
 
-        int input = request.getInput();
-        
-        // Validate input range for all modes
-        if (input < 0) {
-            return new BasicComputationResponse("Error: Input cannot be negative");
-        }
-        
-        // Handle different computation modes
-        switch (mode) {
-            case FACTORIAL:
-                return computeFactorial(input);
-            case PROTOTYPE_ONLY:
-                return runPrototypeComputation(input);
-            default:
-                return new BasicComputationResponse("Error: Unsupported computation mode: " + mode);
+            int input = request.getInput();
+            
+            // Validate input range for all modes
+            if (input < 0) {
+                return new BasicComputationResponse("Error: Input cannot be negative");
+            }
+            
+            // Handle different computation modes
+            switch (mode) {
+                case FACTORIAL:
+                    return computeFactorial(input);
+                case PROTOTYPE_ONLY:
+                    return runPrototypeComputation(input);
+                default:
+                    return new BasicComputationResponse("Error: Unsupported computation mode: " + mode);
+            }
+        } catch (Exception e) {
+            // Catch any unexpected runtime exceptions
+            System.err.println("Unexpected error in compute: " + e.getMessage());
+            return new BasicComputationResponse("Error: Internal computation error");
         }
     }
 
     /**
      * Computes factorial of the given input number.
      * Uses BigInteger to handle large factorial results.
-     * 
-     * @param input the number to compute factorial for
-     * @return ComputationResponse with the factorial result
      */
     private ComputationResponse computeFactorial(int input) {
-        // Validate input range
-        if (input < 0) {
-            return new BasicComputationResponse("Error: Factorial is not defined for negative numbers");
-        }
-        
-        if (input > 1000) {
-            return new BasicComputationResponse("Error: Input too large for factorial computation");
-        }
-
         try {
+            // Validate input range
+            if (input < 0) {
+                return new BasicComputationResponse("Error: Factorial is not defined for negative numbers");
+            }
+            
+            if (input > 1000) {
+                return new BasicComputationResponse("Error: Input too large for factorial computation");
+            }
+
             BigInteger result = calculateFactorial(input);
             return new BasicComputationResponse(result.toString());
+            
         } catch (ArithmeticException e) {
+            // Expected exception - computation overflow
             return new BasicComputationResponse("Error: Computation overflow for input: " + input);
+        } catch (Exception e) {
+            // Unexpected exceptions
+            System.err.println("Unexpected error in computeFactorial: " + e.getMessage());
+            return new BasicComputationResponse("Error: Internal factorial computation error");
         }
     }
+
 
     /**
      * Calculates factorial using iterative approach with BigInteger.
