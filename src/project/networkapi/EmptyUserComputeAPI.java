@@ -51,6 +51,13 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
             }
 
             String source = request.getSource().trim();
+            
+            // Additional validation for unexpected issues
+            if (source.length() > 255) {
+                return new BasicInputResponse(RequestStatus.REJECTED,
+                    "Input source path too long");
+            }
+            
             this.currentInputSource = source;
             
             System.out.println("Input source configured: " + source);
@@ -58,8 +65,10 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                 "Input source successfully configured: " + source);
 
         } catch (Exception e) {
+            // Catch any unexpected runtime exceptions
+            System.err.println("Unexpected error in setInputSource: " + e.getMessage());
             return new BasicInputResponse(RequestStatus.REJECTED,
-                "Error configuring input source: " + e.getMessage());
+                "Internal error configuring input source");
         }
     }
 
@@ -72,6 +81,13 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
             }
 
             String destination = request.getDestination().trim();
+            
+            // Additional validation for unexpected issues
+            if (destination.length() > 255) {
+                return new BasicOutputResponse(RequestStatus.REJECTED,
+                    "Output destination path too long");
+            }
+            
             this.currentOutputDestination = destination;
             
             System.out.println("Output destination configured: " + destination);
@@ -79,8 +95,10 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                 "Output destination successfully configured: " + destination);
 
         } catch (Exception e) {
+            // Catch any unexpected runtime exceptions
+            System.err.println("Unexpected error in setOutputDestination: " + e.getMessage());
             return new BasicOutputResponse(RequestStatus.REJECTED,
-                "Error configuring output destination: " + e.getMessage());
+                "Internal error configuring output destination");
         }
     }
 
@@ -110,6 +128,12 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                             "Custom delimiters cannot be null or empty");
                     }
                     appliedDelimiters = delimiters.trim();
+                    
+                    // Validate custom delimiters length
+                    if (appliedDelimiters.length() > 10) {
+                        return new BasicDelimiterResponse("", RequestStatus.REJECTED,
+                            "Custom delimiters too long");
+                    }
                     message = "Custom delimiters applied: " + appliedDelimiters;
                     break;
                     
@@ -125,8 +149,10 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
             return new BasicDelimiterResponse(appliedDelimiters, RequestStatus.ACCEPTED, message);
 
         } catch (Exception e) {
+            // Catch any unexpected runtime exceptions
+            System.err.println("Unexpected error in configureDelimiters: " + e.getMessage());
             return new BasicDelimiterResponse("", RequestStatus.REJECTED,
-                "Error configuring delimiters: " + e.getMessage());
+                "Internal error configuring delimiters");
         }
     }
 
@@ -155,22 +181,30 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
             );
 
         } catch (Exception e) {
+            // Catch any unexpected runtime exceptions
+            System.err.println("Unexpected error in checkJobCompletion: " + e.getMessage());
             return new BasicJobStatusResponse(CompletionStatus.JOB_FAILED,
-                "Error checking job status: " + e.getMessage(), 0, RequestStatus.REJECTED);
+                "Internal error checking job status", 0, RequestStatus.REJECTED);
         }
     }
 
     public JobStatusResponse startComputation() {
+        String jobId = "job_" + System.currentTimeMillis();
+        
         try {
             // Validate that input and output are configured
             if (currentInputSource == null || currentOutputDestination == null) {
+                JobInfo failedJob = new JobInfo(
+                    CompletionStatus.JOB_FAILED,
+                    "Input source and output destination must be configured before starting computation",
+                    0
+                );
+                jobTracker.put(jobId, failedJob);
                 return new BasicJobStatusResponse(CompletionStatus.JOB_FAILED,
                     "Input source and output destination must be configured before starting computation", 
                     0, RequestStatus.REJECTED);
             }
 
-            String jobId = "job_" + System.currentTimeMillis();
-            
             jobTracker.put(jobId, new JobInfo(
                 CompletionStatus.JOB_RUNNING,
                 "Starting file-based computation: " + currentInputSource + " → " + currentOutputDestination,
@@ -201,7 +235,7 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                 
                 // Format like "5=120" using the configured delimiter
                 results.append(inputData[i])
-                      .append("=")  // Use the configured delimiter
+                      .append("=")
                       .append(compResponse.getResult());
                 
                 // Add comma between results (except for the last one)
@@ -216,7 +250,7 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                 75
             ));
 
-            // 3. Write results to output file - FIXED THIS PART!
+            // 3. Write results to output file
             String outputData = results.toString();
             DataWriteRequest writeRequest = new BasicDataWriteRequest(currentOutputDestination, DataFormat.TEXT, outputData);
             DataWriteResponse writeResponse = dataStore.writeData(writeRequest);
@@ -239,8 +273,9 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                 100,
                 RequestStatus.ACCEPTED
             );
-        } catch (Exception e) {
-            String jobId = "job_" + System.currentTimeMillis();
+            
+        } catch (RuntimeException e) {
+            // Expected exceptions - preserve original message
             JobInfo failedJob = new JobInfo(
                 CompletionStatus.JOB_FAILED,
                 "Computation failed: " + e.getMessage(),
@@ -254,8 +289,24 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                 100,
                 RequestStatus.ACCEPTED
             );
+            
+        } catch (Exception e) {
+            // Unexpected exceptions - generic error message
+            System.err.println("Unexpected error in startComputation: " + e.getMessage());
+            JobInfo failedJob = new JobInfo(
+                CompletionStatus.JOB_FAILED,
+                "Internal computation error",
+                100
+            );
+            jobTracker.put(jobId, failedJob);
+            
+            return new BasicJobStatusResponse(
+                CompletionStatus.JOB_FAILED,
+                "Internal computation error",
+                100,
+                RequestStatus.ACCEPTED
+            );
         }
-   
     }
 
 //    /**
