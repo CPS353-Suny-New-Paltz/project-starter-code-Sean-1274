@@ -31,9 +31,19 @@ public class EmptyComputeEngineAPI implements ComputeEngineAPI {
             return new BasicComputationResponse("Error: Computation request cannot be null");
         }
 
-        int input = request.getInput();
+        // Validate computation mode
         ComputationMode mode = request.getMode();
+        if (mode == null) {
+            return new BasicComputationResponse("Error: Computation mode cannot be null");
+        }
 
+        int input = request.getInput();
+        
+        // Validate input range for all modes
+        if (input < 0) {
+            return new BasicComputationResponse("Error: Input cannot be negative");
+        }
+        
         // Handle different computation modes
         switch (mode) {
             case FACTORIAL:
@@ -78,6 +88,7 @@ public class EmptyComputeEngineAPI implements ComputeEngineAPI {
      * @return factorial result as BigInteger
      */
     private BigInteger calculateFactorial(int n) {
+    	 // No validation needed - method is private and called only after input validation
         // Base cases: 0! = 1, 1! = 1
         if (n == 0 || n == 1) {
             return BigInteger.ONE;

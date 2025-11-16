@@ -38,6 +38,25 @@ public class EmptyDataStoreAPI implements DataStoreAPI {
             );
         }
         
+        // Add file extension validation
+        String source = request.getSource();
+        if (!source.toLowerCase().endsWith(".txt")) {
+            return new BasicDataReadResponse(
+                RequestStatus.REJECTED,
+                "Only .txt files are supported", 
+                new int[0]
+            );
+        }
+        
+        // Add basic path validation
+        if (source.contains("..") || source.contains("/") || source.contains("\\")) {
+            return new BasicDataReadResponse(
+                RequestStatus.REJECTED,
+                "Invalid file path", 
+                new int[0]
+            );
+        }
+        
         try (BufferedReader reader = new BufferedReader(new FileReader(request.getSource()))) {
             String line;
             while ((line = reader.readLine()) != null) {
