@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-
 import project.networkapi.EmptyUserComputeAPI;
 import project.networkapi.InputRequest;
 import project.networkapi.InputResponse;
@@ -30,7 +28,8 @@ import project.datastoreapi.DataWriteResponse;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
