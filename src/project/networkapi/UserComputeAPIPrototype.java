@@ -28,7 +28,12 @@ public class UserComputeAPIPrototype {
         System.out.println("Delimiter Response: " + delimRes.getStatus() 
                            + " - " + delimRes.getAppliedDelimiters());
 
-        // NEW: Job completion check with proper response
+     // NEW: Start the actual computation
+        JobStatusResponse startRes = api.startComputation();
+        System.out.println("Computation Started: " + startRes.getStatus() + 
+                          " - " + startRes.getMessage());
+
+        // Check job completion status
         String jobId = "job_123";
         JobStatusRequest statusReq = new BasicJobStatusRequest(jobId);
         JobStatusResponse statusRes = api.checkJobCompletion(statusReq);
@@ -36,7 +41,6 @@ public class UserComputeAPIPrototype {
         System.out.println("Job Status: " + statusRes.getStatus() + 
                           " - Progress: " + statusRes.getProgress() + "%" +
                           " - Message: " + statusRes.getMessage());
-
 
     }
 }

@@ -21,5 +21,7 @@ public interface UserComputeAPI {
     
     // NEW: Job completion check with proper response object
     JobStatusResponse checkJobCompletion(JobStatusRequest request);
+    JobStatusResponse startComputation();
+
 
 }
