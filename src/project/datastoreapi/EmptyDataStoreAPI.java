@@ -50,7 +50,7 @@ public class EmptyDataStoreAPI implements DataStoreAPI {
             }
             
             // Add basic path validation
-            if (source.contains("..") || source.contains("/") || source.contains("\\")) {
+            if (source.contains("..")) {
                 return new BasicDataReadResponse(
                     RequestStatus.REJECTED,
                     "Invalid file path", 
