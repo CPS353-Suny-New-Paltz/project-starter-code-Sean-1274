@@ -44,6 +44,7 @@ public class UserComputeMultiThreaded implements UserComputeAPI {
 
 	// Thread pool configuration
 	private static final int MAX_THREADS = 4; // Reasonable upper bound
+	private final ThreadLocal<String> threadOutputDestination = new ThreadLocal<>();
 
 	public UserComputeMultiThreaded(ComputeEngineAPI computeEngine, DataStoreAPI dataStore) {
 		this.computeEngine = computeEngine;
@@ -95,7 +96,7 @@ public class UserComputeMultiThreaded implements UserComputeAPI {
 				return new BasicOutputResponse(RequestStatus.REJECTED,
 						"Output destination path too long");
 			}
-
+		    this.threadOutputDestination.set(destination);
 			this.currentOutputDestination = destination;
 
 
@@ -196,7 +197,10 @@ public class UserComputeMultiThreaded implements UserComputeAPI {
 	@Override
 	public JobStatusResponse startComputation() {
 		String jobId = "job_" + System.currentTimeMillis();
-		String outputDestination = this.currentOutputDestination; // Capture current output destination 
+	     String outputDestination = this.threadOutputDestination.get();
+	        if (outputDestination == null) {
+	            outputDestination = this.currentOutputDestination; // capture current output destination
+	        }
 		System.out.println("DEBUG: Starting computation with jobId: " + jobId);
 		System.out.println("DEBUG: Output destination for this job: " + outputDestination);
 
