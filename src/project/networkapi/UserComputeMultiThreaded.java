@@ -14,11 +14,12 @@ import project.datastoreapi.DataFormat;
 import project.datastoreapi.DataReadResponse;
 import project.datastoreapi.DataWriteResponse;
 
-import java.util.HashMap;
+
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -49,7 +50,7 @@ public class UserComputeMultiThreaded implements UserComputeAPI {
 	public UserComputeMultiThreaded(ComputeEngineAPI computeEngine, DataStoreAPI dataStore) {
 		this.computeEngine = computeEngine;
 		this.dataStore = dataStore;
-		this.jobTracker = new HashMap<>();
+		this.jobTracker = new ConcurrentHashMap<>();
 		// Create fixed thread pool with upper bound
 		this.executor = Executors.newFixedThreadPool(MAX_THREADS);
 	}
@@ -344,7 +345,7 @@ public class UserComputeMultiThreaded implements UserComputeAPI {
 					CompletionStatus.JOB_FAILED,
 					"Computation failed for job: " + jobId + " → " + outputDestination + ": " + e.getMessage(),
 					100,
-					RequestStatus.ACCEPTED
+					RequestStatus.REJECTED
 					);
 		}
 	}

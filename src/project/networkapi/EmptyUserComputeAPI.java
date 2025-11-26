@@ -304,7 +304,7 @@ public class EmptyUserComputeAPI implements UserComputeAPI {
                 CompletionStatus.JOB_FAILED,
                 "Internal computation error",
                 100,
-                RequestStatus.ACCEPTED
+                RequestStatus.REJECTED
             );
         }
     }
