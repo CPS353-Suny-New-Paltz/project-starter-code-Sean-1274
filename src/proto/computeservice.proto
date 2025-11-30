@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "proto";
+option java_outer_classname = "ComputeServiceProto"; 
+option java_multiple_files = true;
+
+service ComputeService {
+  rpc SetInputSource(InputSourceRequest) returns (BasicResponse);
+  rpc SetOutputDestination(OutputDestinationRequest) returns (BasicResponse);
+  rpc ConfigureDelimiters(DelimiterConfigRequest) returns (DelimiterResponse);
+  rpc StartComputation(StartRequest) returns (JobStatusResponse);
+  rpc CheckJobCompletion(JobStatusRequest) returns (JobStatusResponse);
+}
+
+message InputSourceRequest {
+  string source = 1;
+}
+
+message OutputDestinationRequest {
+  string destination = 1;
+}
+
+message DelimiterConfigRequest {
+  string delimiters = 1;
+  string mode = 2;  // "DEFAULT" or "CUSTOM"
+}
+
+message StartRequest {
+  // Empty - uses previously configured settings
+}
+
+message JobStatusRequest {
+  string job_identifier = 1;
+}
+
+message BasicResponse {
+  string status = 1;  // "ACCEPTED" or "REJECTED"
+  string message = 2;
+}
+
+message DelimiterResponse {
+  string applied_delimiters = 1;
+  string status = 2;
+  string message = 3;
+}
+
+message JobStatusResponse {
+  string completion_status = 1;  // "JOB_RUNNING", "JOB_COMPLETED", etc.
+  string message = 2;
+  int32 progress = 3;
+  string request_status = 4;
+}
