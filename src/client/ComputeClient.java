@@ -19,10 +19,29 @@ public class ComputeClient {
         
         System.out.println("=== Compute Engine Client ===");
         
-        // Get input configuration
-        System.out.print("Enter input file path: ");
-        String inputFile = scanner.nextLine();
-        api.setInputSource(new BasicInputRequest(inputFile));
+        // Choose input type
+        System.out.println("Choose input type:");
+        System.out.println("1. File upload");
+        System.out.println("2. Manual number input");
+        System.out.print("Enter choice (1 or 2): ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+        
+        String inputSource;
+        if (choice == 1) {
+            // File upload
+            System.out.print("Enter input file path: ");
+            inputSource = scanner.nextLine();
+        } else {
+            // Manual number input
+            System.out.print("Enter numbers separated by spaces: ");
+            String numbers = scanner.nextLine();
+            // Create a temporary file with the numbers
+            inputSource = createTempFileWithNumbers(numbers);
+        }
+        
+        // Set input source
+        api.setInputSource(new BasicInputRequest(inputSource));
         
         // Get output configuration  
         System.out.print("Enter output file path: ");
@@ -41,8 +60,31 @@ public class ComputeClient {
         // Start computation
         System.out.println("Starting computation...");
         var response = api.startComputation();
-        System.out.println("Job started: " + response.getMessage());
+        System.out.println("Result: " + response.getMessage());
         
         scanner.close();
+    }
+    
+    private static String createTempFileWithNumbers(String numbers) {
+        try {
+            // Create a temporary file
+            java.nio.file.Path tempFile = java.nio.file.Files.createTempFile("compute_input", ".txt");
+            
+            // Split numbers by spaces and write one per line
+            String[] numberArray = numbers.split("\\s+");
+            java.util.List<String> lines = new java.util.ArrayList<>();
+            for (String number : numberArray) {
+                lines.add(number.trim());
+            }
+            
+            // Write to temporary file
+            java.nio.file.Files.write(tempFile, lines);
+            return tempFile.toString();
+            
+        } catch (Exception e) {
+            System.err.println("Error creating temporary file: " + e.getMessage());
+            // Fallback - use a default file name
+            return "manual_input.txt";
+        }
     }
 }
