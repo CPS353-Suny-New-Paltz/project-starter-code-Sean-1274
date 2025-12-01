@@ -24,16 +24,22 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 public class GrpcUserComputeAPI implements UserComputeAPI {
+    private final ManagedChannel channel;
     private final ComputeServiceGrpc.ComputeServiceBlockingStub blockingStub;
 
     public GrpcUserComputeAPI(String host, int port) {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
+        this.channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext()
                 .build();
         this.blockingStub = ComputeServiceGrpc.newBlockingStub(channel);
     }
 
-   
+    // Add a shutdown method
+    public void shutdown() throws InterruptedException {
+        channel.shutdown().awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS);
+    }
+
+    @Override
     public InputResponse setInputSource(InputRequest request) {
         InputSourceRequest grpcRequest = InputSourceRequest.newBuilder()
                 .setSource(request.getSource())
