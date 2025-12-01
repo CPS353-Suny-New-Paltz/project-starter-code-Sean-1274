@@ -19,6 +19,7 @@ import project.networkapi.EmptyUserComputeAPI;
 import project.networkapi.UserComputeAPI;
 import project.conceptualapi.EmptyComputeEngineAPI;
 import project.datastoreapi.EmptyDataStoreAPI;
+import project.datastoreapi.DataStoreAPI;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -134,7 +135,7 @@ public class ComputeServiceServer extends ComputeServiceGrpc.ComputeServiceImplB
     public static void main(String[] args) throws Exception {
         // Create your existing components
         EmptyComputeEngineAPI computeEngine = new EmptyComputeEngineAPI();
-        EmptyDataStoreAPI dataStore = new EmptyDataStoreAPI();
+        DataStoreAPI dataStore = new GrpcDataStoreAPI("localhost", 50052);
         UserComputeAPI userComputeAPI = new EmptyUserComputeAPI(computeEngine, dataStore);
 
         int port = 50051;

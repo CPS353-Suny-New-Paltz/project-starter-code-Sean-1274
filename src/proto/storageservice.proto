@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "proto";
+option java_outer_classname = "StroageServiceProto";
+option java_multiple_files = true;
+
+service DataStoreService {
+  rpc ReadData(DataReadRequest) returns (DataReadResponse);
+  rpc WriteData(DataWriteRequest) returns (DataWriteResponse);
+  rpc ConfigureStream(DataStreamRequest) returns (DataStreamResponse);
+}
+
+message DataReadRequest {
+  string source = 1;
+  string format = 2;
+}
+
+message DataReadResponse {
+  string status = 1;
+  string message = 2;
+  repeated int32 data = 3;
+}
+
+message DataWriteRequest {
+  string destination = 1;
+  string format = 2;
+  string data = 3;
+}
+
+message DataWriteResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message DataStreamRequest {
+  string mode = 1;
+  int32 buffer_size = 2;
+  string data_format = 3;
+}
+
+message DataStreamResponse {
+  string status = 1;
+  string message = 2;
+  string mode = 3;
+  int32 buffer_size = 4;
+}
