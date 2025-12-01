@@ -14,11 +14,12 @@ public class ComputeClient {
         String host = "localhost";
         int port = 50051;
         
-        UserComputeAPI api = new GrpcUserComputeAPI(host, port);
+        GrpcUserComputeAPI api = new GrpcUserComputeAPI(host, port);
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("=== Compute Engine Client ===");
         
+        try {
         // Choose input type
         System.out.println("Choose input type:");
         System.out.println("1. File upload");
@@ -61,8 +62,14 @@ public class ComputeClient {
         System.out.println("Starting computation...");
         var response = api.startComputation();
         System.out.println("Result: " + response.getMessage());
-        
-        scanner.close();
+        }finally {
+            try {
+                api.shutdown();
+            } catch (InterruptedException e) {
+                System.err.println("Error shutting down client: " + e.getMessage());
+            }
+            scanner.close();
+        }
     }
     
     private static String createTempFileWithNumbers(String numbers) {
