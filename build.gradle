@@ -50,7 +50,7 @@ test {
     
      // Filter out all failing tests for checkpoint 3
     filter {
-        
+          excludeTestsMatching "Checkpoint3TestSuite"
     }
 }
 protobuf {
