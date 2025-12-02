@@ -126,6 +126,18 @@ public class DataStoreServer extends DataStoreServiceGrpc.DataStoreServiceImplBa
             .start();
 
         System.out.println("Data Store Server started on port " + port);
+     // Add shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutting down gRPC server...");
+            server.shutdown();
+            if (dataStore instanceof GrpcDataStoreAPI) {
+                try {
+                    ((GrpcDataStoreAPI) dataStore).shutdown();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
         server.awaitTermination();
     }
 }
