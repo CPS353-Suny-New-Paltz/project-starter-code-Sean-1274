@@ -20,20 +20,26 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 public class GrpcDataStoreAPI implements DataStoreAPI {
+    private final ManagedChannel channel;  // Store the channel
     private final DataStoreServiceGrpc.DataStoreServiceBlockingStub blockingStub;
 
     public GrpcDataStoreAPI(String host, int port) {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
+        this.channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext()
                 .build();
         this.blockingStub = DataStoreServiceGrpc.newBlockingStub(channel);
+    }
+    
+    // Add shutdown method matching GrpcUserComputeAPI pattern
+    public void shutdown() throws InterruptedException {
+        channel.shutdown().awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS);
     }
 
     @Override
     public DataReadResponse readData(DataReadRequest request) {
         proto.DataReadRequest grpcRequest = proto.DataReadRequest.newBuilder()
                 .setSource(request.getSource())
-                .setFormat(request.getFormat().toString())
+                .setFormat(request.getFormat().name())  // Use .name() instead of .toString()
                 .build();
         
         proto.DataReadResponse grpcResponse = blockingStub.readData(grpcRequest);
@@ -54,7 +60,7 @@ public class GrpcDataStoreAPI implements DataStoreAPI {
         
         proto.DataWriteRequest grpcRequest = proto.DataWriteRequest.newBuilder()
                 .setDestination(request.getDestination())
-                .setFormat(request.getFormat().toString())
+                .setFormat(request.getFormat().name())  // Use .name() instead of .toString()
                 .setData(dataToWrite)
                 .build();
         

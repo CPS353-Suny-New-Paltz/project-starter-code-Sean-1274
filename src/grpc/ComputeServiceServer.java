@@ -26,125 +26,130 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 
 public class ComputeServiceServer extends ComputeServiceGrpc.ComputeServiceImplBase {
-    private final UserComputeAPI userComputeAPI;
+	private final UserComputeAPI userComputeAPI;
 
-    public ComputeServiceServer(UserComputeAPI userComputeAPI) {
-        this.userComputeAPI = userComputeAPI;
-    }
+	public ComputeServiceServer(UserComputeAPI userComputeAPI) {
+		this.userComputeAPI = userComputeAPI;
+	}
 
-    @Override
-    public void setInputSource(InputSourceRequest request, 
-                             StreamObserver<BasicResponse> responseObserver) {
-        try {
-            project.networkapi.InputRequest javaRequest = new BasicInputRequest(request.getSource());
-            project.networkapi.InputResponse javaResponse = userComputeAPI.setInputSource(javaRequest);
-            
-            BasicResponse grpcResponse = BasicResponse.newBuilder()
-                .setStatus(javaResponse.getStatus().toString())
-                .setMessage(javaResponse.getMessage())
-                .build();
-            
-            responseObserver.onNext(grpcResponse);
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
-    }
+	@Override
+	public void setInputSource(InputSourceRequest request, 
+			StreamObserver<BasicResponse> responseObserver) {
+		try {
+			project.networkapi.InputRequest javaRequest = new BasicInputRequest(request.getSource());
+			project.networkapi.InputResponse javaResponse = userComputeAPI.setInputSource(javaRequest);
 
-    @Override
-    public void setOutputDestination(OutputDestinationRequest request,
-                                   StreamObserver<BasicResponse> responseObserver) {
-        try {
-            project.networkapi.OutputRequest javaRequest = new BasicOutputRequest(request.getDestination());
-            project.networkapi.OutputResponse javaResponse = userComputeAPI.setOutputDestination(javaRequest);
-            
-            BasicResponse grpcResponse = BasicResponse.newBuilder()
-                .setStatus(javaResponse.getStatus().toString())
-                .setMessage(javaResponse.getMessage())
-                .build();
-            
-            responseObserver.onNext(grpcResponse);
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
-    }
+			BasicResponse grpcResponse = BasicResponse.newBuilder()
+					.setStatus(javaResponse.getStatus().toString())
+					.setMessage(javaResponse.getMessage())
+					.build();
 
-    @Override
-    public void configureDelimiters(DelimiterConfigRequest request,
-                                  StreamObserver<proto.DelimiterResponse> responseObserver) {
-        try {
-            DelimiterMode mode = DelimiterMode.valueOf(request.getMode());
-            project.networkapi.DelimiterRequest javaRequest = new BasicDelimiterRequest(request.getDelimiters(), mode);
-            project.networkapi.DelimiterResponse javaResponse = userComputeAPI.configureDelimiters(javaRequest);
-            
-            proto.DelimiterResponse grpcResponse = proto.DelimiterResponse.newBuilder()
-                .setAppliedDelimiters(javaResponse.getAppliedDelimiters())
-                .setStatus(javaResponse.getStatus().toString())
-                .setMessage(javaResponse.getMessage())
-                .build();
-            
-            responseObserver.onNext(grpcResponse);
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
-    }
+			responseObserver.onNext(grpcResponse);
+			responseObserver.onCompleted();
+		} catch (Exception e) {
+			responseObserver.onError(e);
+		}
+	}
 
-    @Override
-    public void startComputation(StartRequest request,
-                               StreamObserver<proto.JobStatusResponse> responseObserver) {
-        try {
-            project.networkapi.JobStatusResponse javaResponse = userComputeAPI.startComputation();
-            
-            proto.JobStatusResponse grpcResponse = proto.JobStatusResponse.newBuilder()
-                .setCompletionStatus(javaResponse.getStatus().toString())
-                .setMessage(javaResponse.getMessage())
-                .setProgress(javaResponse.getProgress())
-                .setRequestStatus(javaResponse.getRequestStatus().toString())
-                .build();
-            
-            responseObserver.onNext(grpcResponse);
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
-    }
+	@Override
+	public void setOutputDestination(OutputDestinationRequest request,
+			StreamObserver<BasicResponse> responseObserver) {
+		try {
+			project.networkapi.OutputRequest javaRequest = new BasicOutputRequest(request.getDestination());
+			project.networkapi.OutputResponse javaResponse = userComputeAPI.setOutputDestination(javaRequest);
 
-    @Override
-    public void checkJobCompletion(JobStatusRequest request,
-                                 StreamObserver<proto.JobStatusResponse> responseObserver) {
-        try {
-            project.networkapi.JobStatusRequest javaRequest = new BasicJobStatusRequest(request.getJobIdentifier());
-            project.networkapi.JobStatusResponse javaResponse = userComputeAPI.checkJobCompletion(javaRequest);
-            
-            proto.JobStatusResponse grpcResponse = proto.JobStatusResponse.newBuilder()
-                .setCompletionStatus(javaResponse.getStatus().toString())
-                .setMessage(javaResponse.getMessage())
-                .setProgress(javaResponse.getProgress())
-                .setRequestStatus(javaResponse.getRequestStatus().toString())
-                .build();
-            
-            responseObserver.onNext(grpcResponse);
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
-    }
+			BasicResponse grpcResponse = BasicResponse.newBuilder()
+					.setStatus(javaResponse.getStatus().toString())
+					.setMessage(javaResponse.getMessage())
+					.build();
 
-    public static void main(String[] args) throws Exception {
-        // Create your existing components
-        EmptyComputeEngineAPI computeEngine = new EmptyComputeEngineAPI();
-        DataStoreAPI dataStore = new GrpcDataStoreAPI("localhost", 50052);
-        UserComputeAPI userComputeAPI = new EmptyUserComputeAPI(computeEngine, dataStore);
+			responseObserver.onNext(grpcResponse);
+			responseObserver.onCompleted();
+		} catch (Exception e) {
+			responseObserver.onError(e);
+		}
+	}
 
-        int port = 50051;
-        Server server = ServerBuilder.forPort(port)
-            .addService(new ComputeServiceServer(userComputeAPI))
-            .build()
-            .start();
+	@Override
+	public void configureDelimiters(DelimiterConfigRequest request,
+			StreamObserver<proto.DelimiterResponse> responseObserver) {
+		try {
+			DelimiterMode mode = DelimiterMode.valueOf(request.getMode());
+			project.networkapi.DelimiterRequest javaRequest = new BasicDelimiterRequest(request.getDelimiters(), mode);
+			project.networkapi.DelimiterResponse javaResponse = userComputeAPI.configureDelimiters(javaRequest);
 
-        System.out.println("Compute Service Server started on port " + port);
-        server.awaitTermination();
-    }
+			proto.DelimiterResponse grpcResponse = proto.DelimiterResponse.newBuilder()
+					.setAppliedDelimiters(javaResponse.getAppliedDelimiters())
+					.setStatus(javaResponse.getStatus().toString())
+					.setMessage(javaResponse.getMessage())
+					.build();
+
+			responseObserver.onNext(grpcResponse);
+			responseObserver.onCompleted();
+		} catch (Exception e) {
+			responseObserver.onError(e);
+		}
+	}
+
+	@Override
+	public void startComputation(StartRequest request,
+			StreamObserver<proto.JobStatusResponse> responseObserver) {
+		try {
+			project.networkapi.JobStatusResponse javaResponse = userComputeAPI.startComputation();
+
+			proto.JobStatusResponse grpcResponse = proto.JobStatusResponse.newBuilder()
+					.setCompletionStatus(javaResponse.getStatus().toString())
+					.setMessage(javaResponse.getMessage())
+					.setProgress(javaResponse.getProgress())
+					.setRequestStatus(javaResponse.getRequestStatus().toString())
+					.build();
+
+			responseObserver.onNext(grpcResponse);
+			responseObserver.onCompleted();
+		} catch (Exception e) {
+			responseObserver.onError(e);
+		}
+	}
+
+	@Override
+	public void checkJobCompletion(JobStatusRequest request,
+			StreamObserver<proto.JobStatusResponse> responseObserver) {
+		try {
+			project.networkapi.JobStatusRequest javaRequest = new BasicJobStatusRequest(request.getJobIdentifier());
+			project.networkapi.JobStatusResponse javaResponse = userComputeAPI.checkJobCompletion(javaRequest);
+
+			proto.JobStatusResponse grpcResponse = proto.JobStatusResponse.newBuilder()
+					.setCompletionStatus(javaResponse.getStatus().toString())
+					.setMessage(javaResponse.getMessage())
+					.setProgress(javaResponse.getProgress())
+					.setRequestStatus(javaResponse.getRequestStatus().toString())
+					.build();
+
+			responseObserver.onNext(grpcResponse);
+			responseObserver.onCompleted();
+		} catch (Exception e) {
+			responseObserver.onError(e);
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		// Create existing components
+		EmptyComputeEngineAPI computeEngine = new EmptyComputeEngineAPI();
+		GrpcDataStoreAPI dataStore = new GrpcDataStoreAPI("localhost", 50052);
+		try {
+			UserComputeAPI userComputeAPI = new EmptyUserComputeAPI(computeEngine, dataStore);
+
+			int port = 50051;
+			Server server = ServerBuilder.forPort(port)
+					.addService(new ComputeServiceServer(userComputeAPI))
+					.build()
+					.start();
+
+			System.out.println("Compute Service Server started on port " + port);
+			server.awaitTermination();
+		} finally {
+			// Always shut down the dataStore connection
+			dataStore.shutdown();
+		}
+	}
 }
