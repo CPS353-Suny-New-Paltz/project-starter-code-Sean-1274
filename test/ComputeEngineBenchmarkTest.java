@@ -3,6 +3,7 @@
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import project.conceptualapi.ComputeEngineAPI;
@@ -123,16 +124,21 @@ public class ComputeEngineBenchmarkTest {
 		long originalAvg = calculateAverage(originalTimes);
 		long cachedAvg = calculateAverage(cachedTimes);
 		double improvement = 100.0 * (originalAvg - cachedAvg) / originalAvg;
-
+		int result = 0;
 		System.out.println("\n=== Benchmark Results ===");
 		System.out.println("EmptyComputeEngineAPI (original) average: " + originalAvg + " ms");
 		System.out.println("CachedComputeEngineAPI (optimized) average: " + cachedAvg + " ms");
 		System.out.println("Performance improvement: " + String.format("%.2f", improvement) + "%");
 		System.out.println();
 
-//		// Assert 10% improvement requirement
-//		assertNotNull(improvement >= 10.0,
-//				String.format("Expected at least 10%% improvement, got %.2f%%", improvement));
+		if(improvement >= 10) {
+			result = 1;
+		}else {
+			result = 0;
+		}
+		// Assert 10% improvement requirement
+		assertEquals(1,result,
+				String.format("Expected at least 10%% improvement, got %.2f%%", improvement));
 
 		// Clean up test files
 		cleanupTestFiles();
