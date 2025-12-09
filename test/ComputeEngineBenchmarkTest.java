@@ -96,10 +96,13 @@ public class ComputeEngineBenchmarkTest {
 		System.out.println("Test data: " + TEST_NUMBERS.length + " numbers (mix of sizes)");
 		System.out.println();
 
-		// Warm up JVM
+		// Warm up JVM for BOTH implementations
 		System.out.println("Warming up JVM (" + WARMUP_ITERATIONS + " iterations)...");
 		for (int i = 0; i < WARMUP_ITERATIONS; i++) {
-			runBenchmarkIteration("warmup_" + i, false);
+		    runBenchmarkIteration("warmup_original_" + i, false);  // Warm original
+		}
+		for (int i = 0; i < WARMUP_ITERATIONS; i++) {
+		    runBenchmarkIteration("warmup_cached_" + i, true);  // Warm original
 		}
 
 		// Benchmark original implementation
