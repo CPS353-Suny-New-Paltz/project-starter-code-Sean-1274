@@ -100,7 +100,9 @@ public class ComputeEngineBenchmarkTest {
 		System.out.println("Warming up JVM (" + WARMUP_ITERATIONS + " iterations)...");
 		for (int i = 0; i < WARMUP_ITERATIONS; i++) {
 		    runBenchmarkIteration("warmup_original_" + i, false);  // Warm original
-		    runBenchmarkIteration("warmup_cached_" + i, true);     // Warm cached
+		}
+		for (int i = 0; i < WARMUP_ITERATIONS; i++) {
+		    runBenchmarkIteration("warmup_cached_" + i, true);  // Warm original
 		}
 
 		// Benchmark original implementation
@@ -288,8 +290,8 @@ public class ComputeEngineBenchmarkTest {
 		Files.deleteIfExists(Path.of("repeated_output_cached.txt"));
 
 		// Caching should provide significant improvement for repeated computations
-		assertTrue(improvement > 30.0, 
-				"Caching should provide >30% improvement for repeated computations");
+		assertTrue(improvement > 50.0, 
+				"Caching should provide >50% improvement for repeated computations");
 	}
 
 	/**
