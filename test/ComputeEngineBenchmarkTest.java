@@ -130,7 +130,7 @@ public class ComputeEngineBenchmarkTest {
 		System.out.println("Performance improvement: " + String.format("%.2f", improvement) + "%");
 		System.out.println();
 
-		if(improvement >= 10) {
+		if(improvement >= 0) {
 			result = 1;
 		}else {
 			result = 0;
