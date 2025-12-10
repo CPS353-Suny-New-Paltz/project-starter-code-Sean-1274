@@ -130,12 +130,9 @@ public class ComputeEngineBenchmarkTest {
 		System.out.println("Performance improvement: " + String.format("%.2f", improvement) + "%");
 		System.out.println();
 
-<<<<<<< Updated upstream
-		if(improvement >=0) {
-=======
 
 		if(improvement >= 0) {
->>>>>>> Stashed changes
+
 			result = 1;
 		}else {
 			result = 0;
