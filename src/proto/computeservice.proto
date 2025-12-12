@@ -12,6 +12,12 @@ service ComputeService {
   rpc ConfigureDelimiters(DelimiterConfigRequest) returns (DelimiterResponse);
   rpc StartComputation(StartRequest) returns (JobStatusResponse);
   rpc CheckJobCompletion(JobStatusRequest) returns (JobStatusResponse);
+  
+    //NEW async methods
+  rpc SubmitComputationAsync(AsyncStartRequest) returns (AsyncJobResponse);
+  rpc GetJobResult(JobStatusRequest) returns (JobResultResponse);
+  rpc CancelJob(JobStatusRequest) returns (JobStatusResponse);
+  rpc ListJobs(ListJobsRequest) returns (JobListResponse);
 }
 
 message InputSourceRequest {
@@ -51,4 +57,42 @@ message JobStatusResponse {
   string message = 2;
   int32 progress = 3;
   string request_status = 4;
+}
+
+// NEW messages for async operations
+message AsyncStartRequest {
+  // Could be empty or have configuration options
+}
+
+message AsyncJobResponse {
+  string job_id = 1;
+  string message = 2;
+  string status = 3; // "ACCEPTED" or "REJECTED"
+}
+
+message JobResultResponse {
+  string result_data = 1;
+  string message = 2;
+  string status = 3; // "ACCEPTED" or "REJECTED"
+}
+
+message JobSummary {
+  string job_id = 1;
+  string status = 2; // "JOB_RUNNING", "JOB_COMPLETED", etc.
+  int32 progress = 3;
+  string output_destination = 4;
+  string message = 5;
+}
+
+message JobListResponse {
+  repeated JobSummary jobs = 1;
+  string message = 2;
+  string status = 3; // "ACCEPTED" or "REJECTED"
+}
+
+message ListJobsRequest {
+  // Could add filters like status, time range, etc.
+  bool include_completed = 1;
+  bool include_failed = 2;
+  bool include_running = 3;
 }
